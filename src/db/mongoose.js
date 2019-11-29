@@ -6,7 +6,7 @@ require('dotenv').config();
 mongoose.connect(`${process.env.MONGO_URI}`, {
   useNewUrlParser: true,
   useCreateIndex: true
-}, (error, result) => {
+}, (error) => {
   if (error) {
     console.log(error);
   } else {
@@ -17,11 +17,14 @@ mongoose.connect(`${process.env.MONGO_URI}`, {
 const User = mongoose.model('User', {
   name: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   email: {
     type: String,
     required: true,
+    trim: true,
+    lowercase: true,
     validate(value) {
       if(!validator.isEmail(value)) {
         throw new Error('Must provide a valid email');
@@ -30,9 +33,21 @@ const User = mongoose.model('User', {
   },
   age: {
     type: Number,
+    default: 0,
     validate(value) {
       if (value < 0) {
         throw new Error('Age must be a positive number');
+      }
+    }
+  },
+  password: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 7,
+    validate(value) {
+      if (value.toLowerCase().includes('password')) {
+        throw new Error('Password can not contain the word password')
       }
     }
   }
@@ -41,10 +56,12 @@ const User = mongoose.model('User', {
 const Task = mongoose.model('Task', {
   description: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   completed: {
-    boolean: Boolean
+    boolean: Boolean,
+    default: false
   }
 })
 
@@ -60,15 +77,15 @@ newtask.save().then(() => {
   console.log(error)
 })
 
-const me = new User({
-  name: 'Scott',
-  email: 'Scott@gmail.com',
-  age: 28
-})
+// const me = new User({
+//   name: 'Scott',
+//   email: 'Scott@gmail.com',
+//   password: "passvalid"
+// })
 
 
-me.save().then(() => {
-  console.log(me);
-}).catch((error) => {
-  console.log('Error', error);
-})
+// me.save().then(() => {
+//   console.log(me);
+// }).catch((error) => {
+//   console.log('Error', error);
+// })

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 require('dotenv').config();
 
@@ -15,17 +16,54 @@ mongoose.connect(`${process.env.MONGO_URI}`, {
 
 const User = mongoose.model('User', {
   name: {
-    type: String
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    validate(value) {
+      if(!validator.isEmail(value)) {
+        throw new Error('Must provide a valid email');
+      }
+    }
   },
   age: {
-    type: Number
+    type: Number,
+    validate(value) {
+      if (value < 0) {
+        throw new Error('Age must be a positive number');
+      }
+    }
+  }
+})
+
+const Task = mongoose.model('Task', {
+  description: {
+    type: String,
+    required: true
+  },
+  completed: {
+    boolean: Boolean
   }
 })
 
 
+const newtask = new Task({
+  description: 'go to mall',
+  completed: false
+})
+
+newtask.save().then(() => {
+  console.log('new task saved');
+}).catch((error) => {
+  console.log(error)
+})
+
 const me = new User({
   name: 'Scott',
-  age: 27
+  email: 'Scott@gmail.com',
+  age: 28
 })
 
 

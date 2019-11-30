@@ -33,21 +33,19 @@ app.post('/users', (request, response) => {
 
 // Endpoint to get all users
 app.get('/users', (request, response) => {
-  User.find({}, (error, users) => {
-    if (error) {
-      return response.status(400).send(error);
-    }
+  User.find({}).then((users) => {
     response.status(200).send(users);
+  }).catch((error) => {
+    response.status(400).send(error);
   })
 });
 
 // Endpoint to get a specific user by uid
 app.get('/users/:id', (request, response) => {
-  User.findById(request.params.id,  (error, user) => {
-    if (error) {
-      return response.status(400).send(error);
-    }
+  User.findById(request.params.id).then((user) => {
     response.status(200).send(user);
+  }).catch((error) => {
+    response.status(400).send(error);
   })
 })
 
@@ -67,8 +65,9 @@ app.delete('/users/:id', (request, response) => {
 // Endpoint to create a new task resource
 app.post('/tasks', (request, response) => {
   const task = new Task(request.body);
+
   task.save().then(() => {
-    response.status(201).send('New task resource created');
+    response.status(201).send(task);
   }).catch((error) => {
     response.status(400).send(error);
   })

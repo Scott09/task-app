@@ -30,6 +30,7 @@ app.post('/users', (request, response) => {
   })
 });
 
+
 // Endpoint to get all users
 app.get('/users', (request, response) => {
   User.find({}, (error, users) => {
@@ -39,6 +40,28 @@ app.get('/users', (request, response) => {
     response.status(200).send(users);
   })
 });
+
+// Endpoint to get a specific user by uid
+app.get('/users/:id', (request, response) => {
+  User.findById(request.params.id,  (error, user) => {
+    if (error) {
+      return response.status(400).send(error);
+    }
+    response.status(200).send(user);
+  })
+})
+
+// Endpoint to delete a specific user
+
+app.delete('/users/:id', (request, response) => {
+  User.findByIdAndDelete(request.params.id, (error) => {
+    if (error) {
+      return response.status(400).send(error);
+    }
+
+    response.status(202).send('User deleted');
+  })
+})
 
 
 

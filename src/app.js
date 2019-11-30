@@ -43,9 +43,12 @@ app.get('/users', (request, response) => {
 // Endpoint to get a specific user by uid
 app.get('/users/:id', (request, response) => {
   User.findById(request.params.id).then((user) => {
+    if (!user) {
+      return response.status(400).send('User not found');
+    }
     response.status(200).send(user);
   }).catch((error) => {
-    response.status(400).send(error);
+    response.status(500).send(error);
   })
 })
 
@@ -72,6 +75,12 @@ app.post('/tasks', (request, response) => {
     response.status(400).send(error);
   })
 })
+
+
+
+
+
+
 
 
 

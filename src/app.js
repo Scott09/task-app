@@ -16,6 +16,8 @@ const app = express();
 
 app.use(express.json());
 
+
+// Endpoint to create a new user
 app.post('/users', (request, response) => {
 
   const user = new User(request.body);
@@ -24,9 +26,23 @@ app.post('/users', (request, response) => {
     console.log('New user saved');
     response.status(201).send('New user resource created');
   }).catch((error) => {
-    console.log(error);
+    response.status(400).send(error);
   })
 });
+
+// Endpoint to get all users
+app.get('/users', (request, response) => {
+  User.find({}, (error, users) => {
+    if (error) {
+      return response.status(400).send(error);
+    }
+    response.status(200).send(users);
+  })
+});
+
+
+
+
 
 
 app.get('/', (request, response) => {

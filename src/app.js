@@ -76,8 +76,27 @@ app.post('/tasks', (request, response) => {
   })
 })
 
+// Endpoint to retrieve all tasks
+app.get('/tasks', (request, response) => {
+  Task.find({}).then((tasks) => {
+    response.status(200).send(tasks);
+  }).catch((error) => {
+    response.status(500).send(error);
+  })
+})
 
 
+// Endpoint to retrieve specific task by id
+app.get('/tasks/:id', (request, response) => {
+  Task.findById(request.params.id).then((task) => {
+    if (!task) {
+      return response.status(400).send('No task found');
+    }
+    response.status(200).send(task);
+  }).catch((error) => {
+    response.status(500).send(error);
+  })
+})
 
 
 

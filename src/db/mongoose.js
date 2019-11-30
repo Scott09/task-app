@@ -89,3 +89,29 @@ newtask.save().then(() => {
 // }).catch((error) => {
 //   console.log('Error', error);
 // })
+
+
+// const Book = mongoose.model('Book', {
+//   name: {
+//     type: String,
+//     required: true,
+//     trim: true
+//   },
+//   length: {
+//     type: Number,
+//     required: true,
+//     trim: true
+//   }
+// })
+
+
+// const newbook = new Book({
+//   name: 'Harry Potter',
+//   length: 400
+// })
+
+// newbook.save().then(() => {
+//   console.log(newbook);
+// }).catch((error) => {
+//   console.log(error);
+// })

@@ -57,7 +57,7 @@ app.get('/users/:id', (request, response) => {
 app.delete('/users/:id', (request, response) => {
   User.findByIdAndDelete(request.params.id, (error) => {
     if (error) {
-      return response.status(400).send(error);
+      return response.status(404).send(error);
     }
 
     response.status(202).send('User deleted');
@@ -90,7 +90,7 @@ app.get('/tasks', (request, response) => {
 app.get('/tasks/:id', (request, response) => {
   Task.findById(request.params.id).then((task) => {
     if (!task) {
-      return response.status(400).send('No task found');
+      return response.status(404).send('No task found');
     }
     response.status(200).send(task);
   }).catch((error) => {

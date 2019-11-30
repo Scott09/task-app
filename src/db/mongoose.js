@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 
 require('dotenv').config();
 
@@ -14,29 +13,17 @@ mongoose.connect(`${process.env.MONGO_URI}`, {
   }
 })
 
-const Task = mongoose.model('Task', {
-  description: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  completed: {
-    boolean: Boolean,
-    default: false
-  }
-})
 
+// const newtask = new Task({
+//   description: 'go to mall',
+//   completed: false
+// })
 
-const newtask = new Task({
-  description: 'go to mall',
-  completed: false
-})
-
-newtask.save().then(() => {
-  console.log('new task saved');
-}).catch((error) => {
-  console.log(error)
-})
+// newtask.save().then(() => {
+//   console.log('new task saved');
+// }).catch((error) => {
+//   console.log(error)
+// })
 
 // const me = new User({
 //   name: 'Scott',

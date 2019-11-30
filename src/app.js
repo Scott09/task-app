@@ -7,7 +7,7 @@ require('./db/mongoose');
 
 
 const User = require('./models/user');
-
+const Task = require('./models/task');
 
 
 const PORT = process.env.PORT || 3000;
@@ -62,6 +62,22 @@ app.delete('/users/:id', (request, response) => {
     response.status(202).send('User deleted');
   })
 })
+
+
+// Endpoint to create a new task resource
+app.post('/tasks', (request, response) => {
+  const task = new Task(request.body);
+  task.save().then(() => {
+    response.status(201).send('New task resource created');
+  }).catch((error) => {
+    response.status(400).send(error);
+  })
+})
+
+
+
+
+
 
 
 

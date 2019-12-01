@@ -56,61 +56,70 @@ app.get('/users/:id', async (request, response) => {
     response.status(500).send(error);
   }
 
-  
-  // User.findById(request.params.id).then((user) => {
-  //   if (!user) {
-  //     return response.status(400).send('User not found');
-  //   }
-  //   response.status(200).send(user);
-  // }).catch((error) => {
-  //   response.status(500).send(error);
-  // })
 })
 
 // Endpoint to delete a specific user
 
-app.delete('/users/:id', (request, response) => {
-  User.findByIdAndDelete(request.params.id, (error) => {
-    if (error) {
-      return response.status(404).send(error);
-    }
+app.delete('/users/:id', async (request, response) => {
 
+  try {
+    await User.findByIdAndDelete(request.params.id);
     response.status(202).send('User deleted');
-  })
+  } catch (error) {
+    response.status(404).send(error);
+  }
+
 })
 
 
 // Endpoint to create a new task resource
-app.post('/tasks', (request, response) => {
-  const task = new Task(request.body);
+app.post('/tasks', async (request, response) => {
 
-  task.save().then(() => {
+  try {
+    const task = new Task(request.body);
+    await task.save();
     response.status(201).send(task);
-  }).catch((error) => {
+  } catch (error) {
     response.status(400).send(error);
-  })
+  }
+
 })
 
 // Endpoint to retrieve all tasks
-app.get('/tasks', (request, response) => {
-  Task.find({}).then((tasks) => {
+app.get('/tasks', async (request, response) => {
+
+  try {
+    const tasks = await Task.find({});
     response.status(200).send(tasks);
-  }).catch((error) => {
+  } catch (error) {
     response.status(500).send(error);
-  })
+  }
 })
 
 
 // Endpoint to retrieve specific task by id
-app.get('/tasks/:id', (request, response) => {
-  Task.findById(request.params.id).then((task) => {
+app.get('/tasks/:id', async (request, response) => {
+
+
+  try {
+    const task = await Task.findById(request.params.id);
     if (!task) {
       return response.status(404).send('No task found');
     }
     response.status(200).send(task);
-  }).catch((error) => {
+  } catch (error) {
     response.status(500).send(error);
-  })
+  }
+ 
+
+  // Task.findById(request.params.id).then((task) => {
+  //   if (!task) {
+  //     return response.status(404).send('No task found');
+  //   }
+  //   response.status(200).send(task);
+  // }).catch((error) => {
+  //   response.status(500).send(error);
+  // })
 })
 
 

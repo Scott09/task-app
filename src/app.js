@@ -111,38 +111,7 @@ app.get('/tasks/:id', async (request, response) => {
     response.status(500).send(error);
   }
  
-
-  // Task.findById(request.params.id).then((task) => {
-  //   if (!task) {
-  //     return response.status(404).send('No task found');
-  //   }
-  //   response.status(200).send(task);
-  // }).catch((error) => {
-  //   response.status(500).send(error);
-  // })
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.get('/', (request, response) => {
-  response.send('Hey im the response')
-})
-
-app.post('/tasks', (request, response) => {
-
-})
-
 
 app.listen(PORT, () => {
   console.log('App is listening on port ' + PORT);

@@ -27,7 +27,6 @@ app.post('/users', async (request, response) => {
     } catch (error) {
       response.status(400).send(error);
     }
-
 });
 
 
@@ -67,7 +66,6 @@ app.delete('/users/:id', async (request, response) => {
   } catch (error) {
     response.status(404).send(error);
   }
-
 })
 
 //Endpoint to update specific user
@@ -127,7 +125,6 @@ app.get('/tasks', async (request, response) => {
 // Endpoint to retrieve specific task by id
 app.get('/tasks/:id', async (request, response) => {
 
-
   try {
     const task = await Task.findById(request.params.id);
     if (!task) {
@@ -138,6 +135,44 @@ app.get('/tasks/:id', async (request, response) => {
     response.status(500).send(error);
   }
  
+})
+
+
+// Endpoint to retrieve and update a specific task
+
+app.patch('/tasks/:id', async (request, response) => {
+  const updates = Object.keys(request.body);
+  const allowedUpdates = ["description", "completed"];
+
+  const isValid = updates.every((update) => {
+    return allowedUpdates.includes(update);
+  })
+
+  if (!isValid) {
+    return response.status(400).send('Invalid updates');
+  }
+
+  try {
+    const task = await Task.findByIdAndUpdate(request.params.id, request.body, {new: true, runValidators: true});
+    if (!task) {
+      return response.status(404).send('No task found');
+    }
+    response.status(200).send(task);
+  } catch (error) {
+    response.status(400 ).send(error);
+  }
+})
+
+
+// Endpoint to delete specific task
+
+app.delete('/tasks/:id', async (request, response) => {
+  try {
+    await Task.findByIdAndDelete(request.params.id);
+    response.send(202).send('Task deleted');
+  } catch (error) {
+    response.status(400).send(error);
+  }
 })
 
 app.listen(PORT, () => {

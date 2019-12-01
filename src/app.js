@@ -55,7 +55,6 @@ app.get('/users/:id', async (request, response) => {
   } catch (error) {
     response.status(500).send(error);
   }
-
 })
 
 // Endpoint to delete a specific user
@@ -69,6 +68,22 @@ app.delete('/users/:id', async (request, response) => {
     response.status(404).send(error);
   }
 
+})
+
+//Endpoint to update specific user
+
+app.patch('/users/:id', async (request, response) => {
+  try {
+    const user = await User.findByIdAndUpdate(request.params.id, request.body, { new: true , runValidators: true });
+    
+    if (!user) {
+      return response.status(404).send('No user found');
+    }
+    response.status(200).send(user);
+
+  } catch (error) {
+    response.status(500).send(error);
+  }
 })
 
 

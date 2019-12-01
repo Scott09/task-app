@@ -73,9 +73,21 @@ app.delete('/users/:id', async (request, response) => {
 //Endpoint to update specific user
 
 app.patch('/users/:id', async (request, response) => {
+
+  const updates = Object.keys(request.body);
+  const allowedUpdates = ["name", "email", "password", "age"];
+  const isValidOperation = updates.every((update) => {
+    return allowedUpdates.includes(update);
+  })
+
+  if (!isValidOperation) {
+    return response.status(400).send('Invalid updates');
+  }
+
+
   try {
     const user = await User.findByIdAndUpdate(request.params.id, request.body, { new: true , runValidators: true });
-    
+
     if (!user) {
       return response.status(404).send('No user found');
     }

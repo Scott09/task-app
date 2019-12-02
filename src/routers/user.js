@@ -70,7 +70,15 @@ router.patch('/users/:id', async (request, response) => {
 
 
   try {
-    const user = await User.findByIdAndUpdate(request.params.id, request.body, { new: true , runValidators: true });
+
+    const user = await User.findById(request.params.id);
+
+    updates.forEach((update) => user[update] = request.body[update])
+
+    await user.save()
+
+
+    // const user = await User.findByIdAndUpdate(request.params.id, request.body, { new: true , runValidators: true });
 
     if (!user) {
       return response.status(404).send('No user found');

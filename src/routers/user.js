@@ -5,8 +5,6 @@ const router = new express.Router();
 
 // Endpoint to create a new user
 router.post('/users', async (request, response) => {
-
-  
     try {
       const user = new User(request.body);
       const token = await user.generateAuthToken();
@@ -24,6 +22,10 @@ router.post('/users/login', async (request, response) => {
   } catch (error) {
     response.status(400).send()
   }
+})
+
+router.get('/users/me', auth, async (request, response) => {
+  response.send(request.user);
 })
 
 

@@ -24,6 +24,21 @@ router.post('/users/login', async (request, response) => {
   }
 })
 
+
+// Logout from session endpoint
+router.post('/users/logout', auth, async (request, response) => {
+  try {
+    request.user.tokens = request.user.tokens.filter((token) => {
+      return token.token !== request.token;
+    })
+    await request.user.save();
+    response.send();
+  } catch (error) {
+    response.status(500).send();
+  }
+})
+
+
 router.get('/users/me', auth, async (request, response) => {
   response.send(request.user);
 })
@@ -66,6 +81,8 @@ router.delete('/users/:id', async (request, response) => {
     response.status(404).send(error);
   }
 })
+
+
 
 //Endpoint to update specific user
 

@@ -38,6 +38,16 @@ router.post('/users/logout', auth, async (request, response) => {
   }
 })
 
+// Logout user from all sessions
+router.post('/users/logout/all', auth, async (request, response) => {
+  try {
+    request.user.tokens = [];
+    await request.user.save();
+    response.send();
+  } catch (error) {
+    response.status(500).send();
+  }
+})
 
 router.get('/users/me', auth, async (request, response) => {
   response.send(request.user);

@@ -1,24 +1,26 @@
 const express = require('express');
 const User = require('../models/user');
-
+const auth = require('../middleware/auth');
 const router = new express.Router();
 
 // Endpoint to create a new user
 router.post('/users', async (request, response) => {
 
-  const user = new User(request.body);
+  
     try {
-      await user.save();
-      response.status(201).send(user);
+      const user = new User(request.body);
+      const token = await user.generateAuthToken();
+      response.status(201).send({user, token});
     } catch (error) {
       response.status(400).send(error);
     }
 });
-
+ 
 router.post('/users/login', async (request, response) => {
   try {
     const user = await User.findByCredentials(request.body.email, request.body.password);
-    response.send(user);
+    const token = await user.generateAuthToken();
+    response.send({user, token});
   } catch (error) {
     response.status(400).send()
   }
@@ -26,7 +28,7 @@ router.post('/users/login', async (request, response) => {
 
 
 // Endpoint to get all users
-router.get('/users', async (request, response) => {
+router.get('/users', auth ,async (request, response) => {
 
   try {
     const users = await User.find({})

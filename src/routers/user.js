@@ -66,20 +66,6 @@ router.get('/users', auth ,async (request, response) => {
 
 });
 
-// Endpoint to get a specific user by uid
-router.get('/users/:id', async (request, response) => {
-
-  try {
-    const user = await User.findById(request.params.id);
-    if (!user) {
-      return response.status(400).send('Could not find user');
-    }
-    response.status(200).send(user);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-})
-
 // Endpoint to delete a specific user
 
 router.delete('/users/:id', async (request, response) => {

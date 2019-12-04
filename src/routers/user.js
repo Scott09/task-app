@@ -68,10 +68,13 @@ router.get('/users', auth ,async (request, response) => {
 
 // Endpoint to delete a specific user
 
-router.delete('/users/:id', async (request, response) => {
+router.delete('/users/me', auth, async (request, response) => {
 
   try {
-    await User.findByIdAndDelete(request.params.id);
+    // Using request.user._id which is provided to us through our auth middleware
+    // await User.findByIdAndDelete(request.user._id);
+
+    await request.user.remove();
     response.status(202).send('User deleted');
   } catch (error) {
     response.status(404).send(error);
@@ -82,7 +85,7 @@ router.delete('/users/:id', async (request, response) => {
 
 //Endpoint to update specific user
 
-router.patch('/users/:id', async (request, response) => {
+router.patch('/users/me', auth, async (request, response) => {
 
   const updates = Object.keys(request.body);
   const allowedUpdates = ["name", "email", "password", "age"];
@@ -97,19 +100,11 @@ router.patch('/users/:id', async (request, response) => {
 
   try {
 
-    const user = await User.findById(request.params.id);
+    updates.forEach((update) => request.user[update] = request.body[update])
 
-    updates.forEach((update) => user[update] = request.body[update])
+    await request.user.save()
 
-    await user.save()
-
-
-    // const user = await User.findByIdAndUpdate(request.params.id, request.body, { new: true , runValidators: true });
-
-    if (!user) {
-      return response.status(404).send('No user found');
-    }
-    response.status(200).send(user);
+    response.status(200).send(request.user);
 
   } catch (error) {
     response.status(500).send(error);

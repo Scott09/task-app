@@ -34,10 +34,15 @@ router.get('/tasks', async (request, response) => {
 
 
 // Endpoint to retrieve specific task by id
-router.get('/tasks/:id', async (request, response) => {
+router.get('/tasks/:id', auth, async (request, response) => {
 
   try {
-    const task = await Task.findById(request.params.id);
+
+    const task = await Task.findOne({
+      _id: request.params.id,
+      owner: request.user._id
+    });
+
     if (!task) {
       return response.status(404).send('No task found');
     }

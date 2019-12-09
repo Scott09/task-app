@@ -22,11 +22,14 @@ router.post('/tasks', auth,  async (request, response) => {
 })
 
 // Endpoint to retrieve all tasks
-router.get('/tasks', async (request, response) => {
+router.get('/tasks', auth, async (request, response) => {
+
+  
 
   try {
-    const tasks = await Task.find({});
-    response.status(200).send(tasks);
+    const user = request.user;
+    await user.populate('tasks').execPopulate();
+    response.status(200).send(user.tasks);
   } catch (error) {
     response.status(500).send(error);
   }

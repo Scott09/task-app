@@ -22,13 +22,34 @@ router.post('/tasks', auth,  async (request, response) => {
 })
 
 // Endpoint to retrieve all tasks
+// Query strings accepted  /tasks?completed= (true or false);
+//                         /tasks?limit=10 (limit to 10 search results);
+//                         /tasks?skip=10 (will skip first 10 search results);
+// Can chain these together
 router.get('/tasks', auth, async (request, response) => {
 
-  
+
+
+  const matchValue = request.query.completed;
 
   try {
     const user = request.user;
-    await user.populate('tasks').execPopulate();
+    if (matchValue) {
+      await user.populate({
+        path: 'tasks',
+        match: {
+          completed: matchValue
+        },
+        options: {
+          limit: parseInt(request.query.limit),
+          skip: parseInt(request.query.skip)
+        }
+      }).execPopulate();
+    } else {
+      await user.populate('tasks').execPopulate();
+    }
+    
+    
     response.status(200).send(user.tasks);
   } catch (error) {
     response.status(500).send(error);

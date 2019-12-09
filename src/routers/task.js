@@ -25,30 +25,31 @@ router.post('/tasks', auth,  async (request, response) => {
 // Query strings accepted  /tasks?completed= (true or false);
 //                         /tasks?limit=10 (limit to 10 search results);
 //                         /tasks?skip=10 (will skip first 10 search results);
+//                        /tasks?sortBy=createdAt_asc   first argument = what you want to sort, second = how
 // Can chain these together
 router.get('/tasks', auth, async (request, response) => {
 
+  
+  const match = {};
 
-
-  const matchValue = request.query.completed;
+  if (request.query.completed) {
+    match.completed = request.query.completed === 'true';
+  }
 
   try {
     const user = request.user;
-    if (matchValue) {
+   
       await user.populate({
         path: 'tasks',
-        match: {
-          completed: matchValue
-        },
+        match,
         options: {
           limit: parseInt(request.query.limit),
-          skip: parseInt(request.query.skip)
+          skip: parseInt(request.query.skip),
+          sort: {
+            createdAt: -1
+          }
         }
       }).execPopulate();
-    } else {
-      await user.populate('tasks').execPopulate();
-    }
-    
     
     response.status(200).send(user.tasks);
   } catch (error) {

@@ -94,9 +94,14 @@ router.patch('/tasks/:id', async (request, response) => {
 
 // Endpoint to delete specific task
 
-router.delete('/tasks/:id', async (request, response) => {
+router.delete('/tasks/:id', auth, async (request, response) => {
+  
+
   try {
-    const user = await Task.findByIdAndDelete(request.params.id);
+    const user = await Task.findOneAndDelete({
+      _id: request.params.id,
+      owner: request.user._id
+    });
 
     if (!user) {
       return response.status(404).send('Could not find user');

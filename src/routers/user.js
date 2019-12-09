@@ -3,6 +3,12 @@ const User = require('../models/user');
 const auth = require('../middleware/auth');
 const router = new express.Router();
 
+
+const multer = require('multer');
+
+const upload = multer({
+  dest: 'avatars'
+});
 // Endpoint to create a new user
 router.post('/users', async (request, response) => {
     try {
@@ -23,6 +29,8 @@ router.post('/users/login', async (request, response) => {
     response.status(400).send()
   }
 })
+
+
 
 
 // Logout from session endpoint
@@ -51,6 +59,10 @@ router.post('/users/logout/all', auth, async (request, response) => {
 
 router.get('/users/me', auth, async (request, response) => {
   response.send(request.user);
+})
+
+router.post('/users/me/avatar', upload.single('avatar'), async (request, response) => {
+  response.status(200).send();
 })
 
 

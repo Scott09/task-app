@@ -4,20 +4,21 @@ const PORT = process.env.PORT || 3000;
 const userRouter = require('./routers/user');
 const taskRouter = require('./routers/task');
 
-const auth = require('./middleware/auth');
 
 require('dotenv').config();
 require('./db/mongoose');
 
 const app = express();
 
-// app.use(auth);
+const multer = require('multer');
 
+const upload = multer({
+  dest: 'images'
+});
 
-// Maitenance mode
-// app.use((request, response) => {
-//   response.status(503).send('Sorry site is in maitenance mode');
-// })
+app.post('/upload', upload.single('upload'), (request, response) => {
+  response.send()
+});
 
 app.use(express.json());
 app.use(userRouter);

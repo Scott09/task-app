@@ -71,9 +71,7 @@ router.get('/users', auth ,async (request, response) => {
 router.delete('/users/me', auth, async (request, response) => {
 
   try {
-    // Using request.user._id which is provided to us through our auth middleware
-    // await User.findByIdAndDelete(request.user._id);
-
+    
     await request.user.remove();
     response.status(202).send('User deleted');
   } catch (error) {

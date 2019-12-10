@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
     }
   }],
   avatar: {
-    type: buffer
+    type: Buffer
   }
 }, {
   timestamps: true

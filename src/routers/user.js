@@ -80,11 +80,22 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (request, r
   response.status(200).send();
 }, (error, request, response, next) => {
   response.status(400).send({ error: error.message })
+});
+
+
+router.delete('/users/me/avatar', auth, async (request, response) => {
+  try {
+    request.user.avatar = undefined;
+    await request.user.save();
+    response.status(200).send();
+  } catch (error) {
+    response.status(400).send(error);
+  }
 })
 
 
 // Endpoint to get all users
-router.get('/users', auth ,async (request, response) => {
+router.get('/users', auth , async (request, response) => {
 
   try {
     const users = await User.find({})
@@ -105,6 +116,24 @@ router.delete('/users/me', auth, async (request, response) => {
     response.status(202).send('User deleted');
   } catch (error) {
     response.status(404).send(error);
+  }
+})
+
+// Get a users avatar so it can be fetched to the front end
+
+router.get('/users/:id/avatar', async (request, response) => {
+  try {
+
+    const user = await User.findById(request.params.id);
+
+    if (!user && !user.avatar) {
+      throw new Error()
+    }
+
+    response.set('Content-Type', 'image/jpg')
+    response.status(200).send(user.avatar);
+  } catch (error) {
+    response.status(404).send()
   }
 })
 

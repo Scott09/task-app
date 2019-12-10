@@ -13,11 +13,25 @@ const app = express();
 const multer = require('multer');
 
 const upload = multer({
-  dest: 'images'
+  dest: 'images',
+  limits: {
+    fileSize: 1000000
+  },
+  fileFilter(request, file, cb) {
+    if (!file.originalname.match(/\.(doc|docx)$/)) {
+      return cb(new Error('Please upload a word document'))
+    }
+  }
 });
+
+const errorMiddleware = (request, response, next) => {
+  throw new Error('From my middleware');
+}
 
 app.post('/upload', upload.single('upload'), (request, response) => {
   response.send()
+}, (error, request, response, next) => {
+  response.status(400).send({ error: error.message })
 });
 
 app.use(express.json());

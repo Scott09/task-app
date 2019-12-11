@@ -10,7 +10,7 @@ const userOne = {
 
 beforeEach(async () => {
   await User.deleteMany();
-  await userOne.save();
+  await new User(userOne).save();
 });
 
 afterEach(() => {
@@ -25,6 +25,13 @@ test('Should signup new user', async () => {
   }).expect(201)
 });
 
+test('Should login existing user', async () => {
+  await request(app).post('/users/login').send({
+    "name": "Mike",
+    "email": "mike@test.com",
+    "password": "1234567"
+  }).expect(200)
+})
 
 
 

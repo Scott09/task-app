@@ -57,7 +57,11 @@ router.post('/users/logout/all', auth, async (request, response) => {
 })
 
 router.get('/users/me', auth, async (request, response) => {
-  response.send(request.user);
+  try {
+    response.send(request.user);
+  } catch (error) {
+    response.status(401).send()
+  }
 })
 
 

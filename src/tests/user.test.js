@@ -33,6 +33,16 @@ test('Should login existing user', async () => {
   }).expect(200)
 })
 
+test('Testing if user login information is incorrect', async () => {
+  await request(app).post('/users/login').send({
+    "name": "Mike",
+    "email": "mike@test.com",
+    "password": "12345678"
+  }).expect(400)
+})
+
+
+
 
 
 

@@ -23,14 +23,26 @@ beforeEach(async () => {
 
 afterEach(() => {
   console.log('afterEach');
-})
+});
 
 test('Should signup new user', async () => {
-  await request(app).post('/users').send({
+  const response = await request(app).post('/users').send({
     "name": "Scott Appleton",
-    "email": "scottappleton100000@gmail.com",
+    "email": "scottappleton1@gmail.com",
     "password": "1234567"
   }).expect(201)
+
+  // Make sure the database now has that user
+  const user = await User.findById(response.body.user._id);
+  expect(user).not.toBeNull()
+
+  expect(response.body).toMatchObject({
+    user: {
+      name: 'Scott Appleton',
+      email: 'scottappleton1@gmail.com'
+    },
+    token: user.tokens[0].token
+  })
 });
 
 test('Should login existing user', async () => {
@@ -64,8 +76,15 @@ test('Should fail to get user profile for unauthenticated user', async() => {
   .expect(401)
 })
 
+test('Should successfully delete user', async () => {
+  await request(app).delete('/users/me')
+  .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+  .send()
+  .expect(202)
+});
 
-
-
-
-
+test('Should fail to delete user with no Authorization', async () => {
+  await request(app).delete('/users/me')
+  .send()
+  .expect(401)
+});

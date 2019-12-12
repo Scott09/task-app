@@ -43,6 +43,9 @@ test('Should signup new user', async () => {
     },
     token: user.tokens[0].token
   })
+
+  // Make sure the database is not storing a plaintext password
+  expect(user.password).not.toBe('1234567')
 });
 
 test('Should login existing user', async () => {

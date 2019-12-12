@@ -49,18 +49,20 @@ test('Should signup new user', async () => {
 });
 
 test('Should login existing user', async () => {
-  await request(app).post('/users/login').send({
-    "name": "Mike",
-    "email": "mike@test.com",
-    "password": "1234567"
+  const response = await request(app).post('/users/login').send({
+    email: userOne.email,
+    password: userOne.password
   }).expect(200)
+
+  const user = await User.findById(userOneId);
+  
+  expect(response.body.token).toBe(user.tokens[1].token)
 })
 
 test('Testing if user login information is incorrect', async () => {
   await request(app).post('/users/login').send({
-    "name": "Mike",
-    "email": "mike@test.com",
-    "password": "12345678"
+    email: userOne.email,
+    password: "thisisnotthepassword"
   }).expect(400)
 });
 
@@ -84,6 +86,9 @@ test('Should successfully delete user', async () => {
   .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
   .send()
   .expect(202)
+
+  const user = await User.findById(userOneId);
+  expect(user).toBeNull();
 });
 
 test('Should fail to delete user with no Authorization', async () => {

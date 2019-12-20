@@ -91,8 +91,18 @@ test('Should successfully delete user', async () => {
   expect(user).toBeNull();
 });
 
-test('Should fail to delete user with no Authorization', async () => {
+test('Should not delete user with no Authorization', async () => {
   await request(app).delete('/users/me')
   .send()
   .expect(401)
 });
+
+// Make sure we can upload an image and get a 200 HTTP response when authenticated
+test('Should upload avatar image', async() => {
+  await request(app).post('/users/me/avatar')
+  .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+  .attach('avatar', 'src/tests/fixtures/profile-pic.jpg')
+  .expect(200)
+});
+
+

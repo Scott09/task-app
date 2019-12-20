@@ -111,6 +111,20 @@ test('Should not be able to upload image due to no Authentication provided', asy
   await request(app).post('/users/me/avatar')
   .attach('avatar', 'src/tests/fixtures/profile-pic.jpg')
   .expect(401)
+});
+
+// Test case updating users name
+test('Should update users name', async () => {
+  await request(app)
+  .patch('/users/me')
+  .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+  .send({
+    name: 'Scott'
+  })
+  .expect(200);
+
+  const user = await User.findById(userOneId);
+  expect(user.name).toEqual('Scott');
 })
 
 

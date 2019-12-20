@@ -113,7 +113,7 @@ test('Should not be able to upload image due to no Authentication provided', asy
   .expect(401)
 });
 
-// Test case updating users name
+// Test case updating valid user field
 test('Should update users name', async () => {
   await request(app)
   .patch('/users/me')
@@ -125,6 +125,16 @@ test('Should update users name', async () => {
 
   const user = await User.findById(userOneId);
   expect(user.name).toEqual('Scott');
+})
+
+test('Should not allow us to update an invalid user field', async () => {
+  await request(app)
+  .patch('/users/me')
+  .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+  .send({
+    location: 'Vancouver'
+  })
+  .expect(400)
 })
 
 

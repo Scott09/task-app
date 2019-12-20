@@ -1,7 +1,12 @@
 const request = require('supertest');
 const app = require('../app');
 const Task = require('../models/task');
-const { userOne, userOneId, setupDatabase } = require('./fixtures/db');
+const { 
+    userOne,
+    setupDatabase,
+    taskOne,
+    userTwo 
+  } = require('./fixtures/db');
 
 beforeEach(setupDatabase);
 
@@ -27,5 +32,21 @@ test('Get all tasks from user one', async () => {
   .expect(200);
 
   expect(response.body).toHaveLength(2);
+});
+
+
+
+
+// Make sure only owners of tasks can retrive them.
+test('Should not delete other users task', async () => {
+  const response = await request(app)
+  .delete(`/tasks/${taskOne._id}`)
+  .set('Authorization', `Bearer ${userTwo.tokens[0].token}`)
+  .send()
+  .expect(404);
+
+  const task = await Task.findById(taskOne._id);
+  expect(task).not.toBeNull();
 })
+
 

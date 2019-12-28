@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const Task = require('./task');
 require('dotenv').config()
 
-
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -69,8 +68,6 @@ userSchema.methods.generateAuthToken = async function() {
   return token;
 }
 
-
-
 userSchema.virtual('tasks', {
   ref: 'Task',
   localField: '_id',
@@ -81,11 +78,9 @@ userSchema.methods.toJSON = function() {
   const user = this;
   const userObject = user.toObject();
 
-
   delete userObject.password;
   delete userObject.tokens;
   delete userObject.avatar;
-
   return userObject;
 }
 
@@ -101,10 +96,8 @@ userSchema.statics.findByCredentials = async (email, password) => {
   if (!isMatch) {
     throw new Error('Unable to login');
   }
-
   return user;
 }
-
 
 // Hash user password before saving to database
 userSchema.pre('save', async function(next) {
@@ -126,8 +119,6 @@ userSchema.pre('remove', async function(next) {
   next();
 });
 
-
 const User = mongoose.model('User', userSchema);
-
 
 module.exports = User;

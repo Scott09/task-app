@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const taskSchema = new mongoose.Schema({
   description: {
     type: String,
@@ -20,12 +19,9 @@ const taskSchema = new mongoose.Schema({
   timestamps: true
 });
 
-
 taskSchema.pre('save', async function(next) {
   const task = this
-
   console.log('before saving');
-
   next()
 })
 
